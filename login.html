@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Ubah Password, AI Security & Simulasi Database - Tugas Sekolah</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            // Inisialisasi EmailJS menggunakan Public Key dari pengguna
+            emailjs.init("umjeuXHWifG9HnApV");
+        })();
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        /* Custom scrollbar utility */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(30, 27, 75, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between antialiased">
+
+    <header class="py-6 px-4 max-w-7xl mx-auto w-full flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-slate-800">
+        <div class="flex items-center gap-3">
+            <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-shield-halved text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    SecurePass Portal <span class="text-[10px] py-0.5 px-1.5 ml-2 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full font-bold uppercase tracking-wider">AI Integrated</span>
+                </h1>
+                <p class="text-xs text-slate-400">Tugas Sekolah Mandiri - Penyimpanan Local, EmailJS & Gemini LLM</p>
+            </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-2 bg-slate-800/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-700/50 text-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                <span class="text-slate-300 font-medium">Gemini AI: Ready</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-800/80 backdrop-blur px-3 py-1.5 rounded-full border border-slate-700/50 text-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-slate-300 font-medium">EmailJS & LocalStorage: Active</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full px-4 py-8 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Kolom Kiri: Form Ubah Password (7 grid span) -->
+        <section class="lg:col-span-7 bg-slate-900/60 backdrop-blur-xl border border-slate-800 p-6 md:p-8 rounded-3xl shadow-2xl flex flex-col justify-between">
+            <div>
+                <div class="mb-6">
+                    <span class="text-indigo-400 text-xs font-semibold tracking-wider uppercase">Formulir Interaktif</span>
+                    <h2 class="text-2xl font-bold text-white mt-1">Ubah Kredensial Akun</h2>
+                    <p class="text-slate-400 text-sm mt-1">Silakan lengkapi formulir di bawah untuk memperbarui password dan mengirimkan salinan data via EmailJS.</p>
+                </div>
+
+                <form id="passwordForm" class="space-y-5">
+                    <!-- Dropdown Pilihan (30 Pilihan) -->
+                    <div>
+                        <label for="pilihanAksi" class="block text-sm font-medium text-slate-300 mb-1.5 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-indigo-400"></i> Kategori / Alasan Ubah
+                        </label>
+                        <select id="pilihanAksi" name="pilihanAksi" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all cursor-pointer">
+                            <!-- Akan diisi 30 pilihan secara dinamis via JavaScript -->
+                        </select>
+                    </div>
+
+                    <!-- Baris Nama dan Email -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-slate-300 mb-1.5 flex items-center gap-2">
+                                <i class="fa-solid fa-user text-indigo-400"></i> Nama User
+                            </label>
+                            <input type="text" id="username" name="username" placeholder="Masukkan nama lengkap" required
+                                class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-slate-300 mb-1.5 flex items-center gap-2">
+                                <i class="fa-solid fa-envelope text-indigo-400"></i> Email User
+                            </label>
+                            <input type="email" id="email" name="email" placeholder="contoh@domain.com" required
+                                class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Input Password Lama -->
+                    <div class="relative">
+                        <label for="oldPassword" class="block text-sm font-medium text-slate-300 mb-1.5 flex items-center gap-2">
+                            <i class="fa-solid fa-lock text-indigo-400"></i> Password Lama
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="oldPassword" name="oldPassword" placeholder="••••••••" required
+                                class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-4 pr-12 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                            <button type="button" onclick="togglePasswordVisibility('oldPassword', 'toggleOldIcon')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200">
+                                <i id="toggleOldIcon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Input Password Baru -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label for="newPassword" class="block text-sm font-medium text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-key text-indigo-400"></i> Password Baru
+                            </label>
+                            <!-- Tombol pintas audit AI -->
+                            <button type="button" onclick="auditPasswordWithAI()" class="text-xs bg-indigo-950/40 hover:bg-indigo-900/50 text-indigo-300 border border-indigo-800/60 px-2 py-0.5 rounded-lg transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-magnifying-glass-shield"></i> Audit Keamanan AI
+                            </button>
+                        </div>
+                        <div class="relative">
+                            <input type="password" id="newPassword" name="newPassword" placeholder="Min. 6 karakter" required
+                                class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-4 pr-12 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                            <button type="button" onclick="togglePasswordVisibility('newPassword', 'toggleNewIcon')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200">
+                                <i id="toggleNewIcon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <!-- Password Strength Meter -->
+                        <div class="mt-2">
+                            <div class="flex justify-between items-center text-xs text-slate-400 mb-1">
+                                <span>Kekuatan Password:</span>
+                                <span id="strengthText" class="font-semibold text-slate-500">Sangat Lemah</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div id="strengthBar" class="h-full w-0 bg-red-500 transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Ulangi Password Baru -->
+                    <div>
+                        <label for="confirmPassword" class="block text-sm font-medium text-slate-300 mb-1.5 flex items-center gap-2">
+                            <i class="fa-solid fa-shield text-indigo-400"></i> Ulangi Password Baru
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ketik ulang password baru" required
+                                class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-4 pr-12 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                            <button type="button" onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmIcon')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200">
+                                <i id="toggleConfirmIcon" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        <p id="matchWarning" class="text-xs text-red-400 mt-1.5 hidden flex items-center gap-1">
+                            <i class="fa-solid fa-circle-exclamation"></i> Password baru tidak cocok!
+                        </p>
+                    </div>
+
+                    <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                        <button type="submit" id="submitBtn" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3.5 px-6 rounded-xl transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 group transform active:scale-95">
+                            <i class="fa-solid fa-paper-plane group-hover:scale-110 transition-transform"></i> Simpan & Kirim Email asli
+                        </button>
+                        <button type="button" onclick="resetForm()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3.5 px-6 rounded-xl transition-all border border-slate-700 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Quick Info: AI Educational Note -->
+            <div class="mt-6 p-4 bg-slate-800/40 border border-slate-800/80 rounded-2xl flex items-start gap-3">
+                <div class="text-indigo-400 mt-0.5"><i class="fa-solid fa-user-shield text-base"></i></div>
+                <div class="text-xs leading-relaxed text-slate-400">
+                    <span class="font-bold text-slate-300 block mb-0.5">Panduan Siswa Keamanan Siber:</span>
+                    Pastikan password baru kamu menggunakan minimal 1 huruf besar, 1 angka, dan 1 simbol agar tangguh. Gunakan tab <span class="text-indigo-300 font-semibold font-mono">AI Security Hub</span> di kanan jika bingung mencari inspirasi sandi aman & trik mengingatnya!
+                </div>
+            </div>
+        </section>
+
+        <!-- Kolom Kanan: Unified Tabbed System (5 grid span) -->
+        <section class="lg:col-span-5 flex flex-col bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl overflow-hidden min-h-[680px]">
+            
+            <!-- Tab Headers -->
+            <div class="flex border-b border-slate-800 bg-slate-950/40">
+                <button id="tabBtn-monitor" onclick="switchRightTab('monitor')" class="flex-1 py-4 text-center font-bold text-xs sm:text-sm border-b-2 border-indigo-500 text-indigo-400 flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-desktop"></i> Sistem Monitor
+                </button>
+                <button id="tabBtn-ai" onclick="switchRightTab('ai')" class="flex-1 py-4 text-center font-bold text-xs sm:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-robot"></i> AI Security Hub
+                </button>
+            </div>
+
+            <!-- Tab Content 1: Sistem Monitor -->
+            <div id="tabContent-monitor" class="p-6 flex flex-col gap-6 flex-grow">
+                <!-- 1. Real-time LocalStorage Monitor -->
+                <div class="flex flex-col h-[280px]">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-database text-amber-500 text-lg"></i>
+                            <h3 class="font-bold text-white text-md">LocalStorage Viewer</h3>
+                        </div>
+                        <button onclick="clearLocalStorage()" class="text-xs text-red-400 hover:text-red-300 bg-red-950/30 border border-red-900/50 px-2.5 py-1 rounded-lg transition-colors">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Hapus Data
+                        </button>
+                    </div>
+                    <p class="text-slate-400 text-xs mb-3">Monitor langsung isi data yang tersimpan di dalam memori LocalStorage browser kamu saat ini.</p>
+                    
+                    <div class="flex-grow bg-slate-950/80 border border-slate-800 rounded-xl p-4 font-mono text-xs overflow-auto relative custom-scrollbar">
+                        <div class="absolute top-2 right-2 flex gap-1">
+                            <button onclick="copyToClipboard('localStorageData')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-1.5 rounded border border-slate-700 transition-colors" title="Salin JSON">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                        </div>
+                        <pre id="localStorageData" class="text-emerald-400 whitespace-pre-wrap leading-relaxed">{}</pre>
+                    </div>
+                </div>
+
+                <!-- 2. EmailJS Status Client -->
+                <div class="flex flex-col flex-grow min-h-[220px]">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope-circle-check text-pink-500 text-lg"></i>
+                            <h3 class="font-bold text-white text-md">Status Pengiriman EmailJS</h3>
+                        </div>
+                        <span class="text-[10px] bg-emerald-950/50 text-emerald-400 border border-emerald-900/40 px-2 py-0.5 rounded-full font-semibold">LIVE API</span>
+                    </div>
+                    <p class="text-slate-400 text-xs mb-3">Detail respons live dari server EmailJS setelah kamu melakukan submit formulir.</p>
+
+                    <div id="emailContainer" class="flex-grow bg-slate-950/80 border border-slate-800 rounded-xl p-4 overflow-y-auto max-h-[260px] flex flex-col justify-center items-center text-center text-slate-500">
+                        <i class="fa-solid fa-server text-4xl text-slate-700 mb-2 animate-pulse"></i>
+                        <p class="text-sm text-slate-400">Siap Mengirimkan Data</p>
+                        <p class="text-xs text-slate-600 mt-1 max-w-[250px]">Lengkapi data di sebelah kiri dan klik simpan untuk menguji pengiriman EmailJS sungguhan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: AI Security Hub -->
+            <div id="tabContent-ai" class="hidden p-6 flex flex-col flex-grow overflow-y-auto custom-scrollbar max-h-[640px] space-y-6">
+                
+                <!-- AI Key Settings -->
+                <div class="bg-slate-950/50 border border-slate-800/80 rounded-2xl p-3">
+                    <div class="flex justify-between items-center cursor-pointer" onclick="toggleApiKeyInput()">
+                        <div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                            <i class="fa-solid fa-key text-indigo-400"></i>
+                            <span>Pengaturan API Key Gemini (Opsional)</span>
+                        </div>
+                        <span id="apiKeyArrow" class="text-xs text-slate-500 transition-transform duration-200"><i class="fa-solid fa-chevron-down"></i></span>
+                    </div>
+                    <div id="apiKeyInputWrapper" class="mt-2.5 hidden">
+                        <input type="password" id="customApiKey" placeholder="Masukkan API Key Gemini Anda jika ada" 
+                            class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <p class="text-[10px] text-slate-500 mt-1">Gunakan API Key dari Google AI Studio milikmu untuk menjalankan fitur kecerdasan buatan.</p>
+                    </div>
+                </div>
+
+                <!-- Sub Accordion 1: AI Password Auditor -->
+                <div class="bg-slate-950/30 border border-slate-800 rounded-2xl overflow-hidden">
+                    <button class="w-full text-left font-bold text-sm bg-slate-950/40 px-4 py-3.5 border-b border-slate-800/60 flex justify-between items-center" onclick="toggleAISection('auditSection')">
+                        <span class="flex items-center gap-2 text-indigo-400"><i class="fa-solid fa-magnifying-glass-shield"></i> 🔍 Audit Keamanan Kata Sandi</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" id="auditSection-icon"></i>
+                    </button>
+                    <div id="auditSection" class="p-4 space-y-4">
+                        <p class="text-xs text-slate-400 leading-relaxed">Gunakan Gemini LLM untuk menganalisis kata sandi baru yang kamu ketikkan secara mendalam.</p>
+                        <button type="button" onclick="auditPasswordWithAI()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold py-2 px-4 rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-shield-halved"></i> Mulai Audit dengan Gemini AI
+                        </button>
+                        
+                        <!-- Audit Output Display -->
+                        <div id="auditOutput" class="hidden bg-slate-950/80 border border-slate-800 rounded-xl p-4 font-sans text-xs space-y-3">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub Accordion 2: Smart Password Generator -->
+                <div class="bg-slate-950/30 border border-slate-800 rounded-2xl overflow-hidden">
+                    <button class="w-full text-left font-bold text-sm bg-slate-950/40 px-4 py-3.5 border-b border-slate-800/60 flex justify-between items-center" onclick="toggleAISection('generatorSection')">
+                        <span class="flex items-center gap-2 text-purple-400"><i class="fa-solid fa-wand-magic-sparkles"></i> ✨ AI Smart Password Generator</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" id="generatorSection-icon"></i>
+                    </button>
+                    <div id="generatorSection" class="p-4 space-y-4">
+                        <p class="text-xs text-slate-400 leading-relaxed">Hasilkan sandi kuat secara otomatis dan pelajari <strong>mnemonik (jembatan keledai)</strong> unik untuk mengingatnya.</p>
+                        
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Panjang Karakter:</label>
+                                <select id="aiPassLength" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+                                    <option value="8">8 Karakter</option>
+                                    <option value="12" selected>12 Karakter (Sangat Kuat)</option>
+                                    <option value="16">16 Karakter</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Tema Mnemonik:</label>
+                                <select id="aiPassTheme" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-slate-200">
+                                    <option value="kuliner">Kuliner Indonesia 🍜</option>
+                                    <option value="fantasi">Dunia Fantasi/Game 🐉</option>
+                                    <option value="sekolah">Mata Pelajaran Sekolah 📚</option>
+                                    <option value="acak">Kreatif Acak 🎨</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="generatePasswordWithAI()" class="w-full bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold py-2 px-4 rounded-xl transition-all shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Hasilkan Sandi Kreatif & Cerita Mnemonik
+                        </button>
+
+                        <div id="genOutput" class="hidden bg-slate-950/80 border border-slate-800 rounded-xl p-4 font-sans text-xs space-y-3">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub Accordion 3: Cybersecurity Chatbot -->
+                <div class="bg-slate-950/30 border border-slate-800 rounded-2xl overflow-hidden flex flex-col">
+                    <button class="w-full text-left font-bold text-sm bg-slate-950/40 px-4 py-3.5 border-b border-slate-800/60 flex justify-between items-center" onclick="toggleAISection('chatSection')">
+                        <span class="flex items-center gap-2 text-pink-400"><i class="fa-solid fa-comments"></i> 💬 Tanya Jawab Konsultan AI</span>
+                        <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" id="chatSection-icon"></i>
+                    </button>
+                    <div id="chatSection" class="p-4 flex flex-col h-[320px]">
+                        <p class="text-xs text-slate-400 leading-relaxed mb-2">Tanyakan apa saja seputar keamanan akun, phishing, 2FA, dll, langsung kepada AI kami.</p>
+                        
+                        <!-- Chat Dialog Log -->
+                        <div id="chatHistory" class="flex-grow bg-slate-950/80 border border-slate-800 rounded-xl p-3 overflow-y-auto mb-2 space-y-3 custom-scrollbar text-[11px] leading-relaxed">
+                            <div class="text-indigo-400 font-semibold flex items-start gap-1">
+                                <span class="bg-indigo-500/10 border border-indigo-500/20 px-1 py-0.5 rounded text-[9px] uppercase font-bold">SecureBot</span>
+                                <span>Halo, mari belajar keamanan digital bersama! Ada yang bisa saya bantu jelaskan hari ini?</span>
+                            </div>
+                        </div>
+
+                        <!-- Pill Questions Shortcuts -->
+                        <div class="flex gap-1 overflow-x-auto pb-1.5 custom-scrollbar mb-1.5 scroll-smooth whitespace-nowrap text-[10px]">
+                            <button type="button" onclick="sendChatPrompt('Apa itu serangan Phishing?')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-full border border-slate-700 transition-colors flex-shrink-0">🎣 Phishing</button>
+                            <button type="button" onclick="sendChatPrompt('Mengapa 2FA / MFA penting?')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-full border border-slate-700 transition-colors flex-shrink-0">🔑 2FA/MFA</button>
+                            <button type="button" onclick="sendChatPrompt('Bagaimana membuat password yang tidak mudah retak?')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-full border border-slate-700 transition-colors flex-shrink-0">🔐 Tips Sandi</button>
+                        </div>
+
+                        <!-- Chat input elements -->
+                        <div class="flex gap-2">
+                            <input type="text" id="chatInput" placeholder="Ketik pertanyaanmu..." onkeydown="if(event.key === 'Enter') handleChatInputSubmit()"
+                                class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <button type="button" onclick="handleChatInputSubmit()" id="chatSendBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 rounded-xl transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 flex items-center gap-3 bg-slate-900 border border-slate-800 text-white px-5 py-4 rounded-2xl shadow-2xl max-w-sm">
+        <div id="toastIcon" class="w-8 h-8 rounded-xl flex items-center justify-center text-white"></div>
+        <div>
+            <h4 id="toastTitle" class="font-bold text-sm">Notifikasi</h4>
+            <p id="toastMessage" class="text-xs text-slate-400 mt-0.5"></p>
+        </div>
+        <button onclick="hideToast()" class="ml-4 text-slate-400 hover:text-slate-200">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="py-6 px-4 border-t border-slate-800 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2026 Tugas Sekolah Pemrograman Web - All Rights Reserved.</p>
+            <p class="flex items-center gap-1">Dibuat dengan <i class="fa-solid fa-heart text-red-500"></i> untuk Nilai Sempurna A+ !</p>
+        </div>
+    </footer>
+
+    <script>
+        // Kredensial EmailJS dari pengguna
+        const EMAILJS_CONFIG = {
+            serviceId: 'service_hg2iu5l',
+            templateId: 'template_k88ojn9',
+            publicKey: 'umjeuXHWifG9HnApV'
+        };
+
+        // Data Pilihan Dropdown (30 pilihan dinamis)
+        const daftarPilihan = [
+            { val: "ubah_password", text: "1. Ubah Password Akun Utama" },
+            { val: "gabut_parah", text: "2. Gabut Maksimal di Kelas" },
+            { val: "iseng_doang", text: "3. Iseng Cobain Form Tugas" },
+            { val: "pilihan_angka_4", text: "4. Mode Santai (Pilihan 4)" },
+            { val: "pilihan_angka_5", text: "5. Pilihan Angka Lima" },
+            { val: "belajar_koding", text: "6. Belajar Koding HTML CSS JS" },
+            { val: "ngejar_deadline", text: "7. Ngejar Deadline H-1 Jam" },
+            { val: "capek_belajar", text: "8. Pengen Cepat Istirahat" },
+            { val: "cari_inspirasi", text: "9. Cari Inspirasi Projek" },
+            { val: "tugas_kelompok", text: "10. Tugas Kelompok Tapi Kerja Sendiri" },
+            { val: "gabut_level_11", text: "11. Tingkat Gabut 11/10" },
+            { val: "pilihan_12", text: "12. Angka Keberuntungan Dua Belas" },
+            { val: "iseng_bgt", text: "13. Iseng Tingkat Dewa" },
+            { val: "butuh_healing", text: "14. Butuh Healing ke Kantin" },
+            { val: "mode_serius", text: "15. Mode Siswa Rajin" },
+            { val: "pilihan_16", text: "16. Kategori Keamanan Tinggi" },
+            { val: "pilihan_17", text: "17. Opsi Cadangan Tujuh Belas" },
+            { val: "pilihan_18", text: "18. Angka Genap Delapan Belas" },
+            { val: "tugas_akhir_web", text: "19. Projek Akhir Semester" },
+            { val: "pilihan_20", text: "20. Opsi Genap Dua Puluh" },
+            { val: "gabut_akut", text: "21. Mengatasi Bosan Berlebih" },
+            { val: "pilihan_22", text: "22. Pilihan Dua Puluh Dua" },
+            { val: "pilihan_23", text: "23. Pilihan Dua Puluh Tiga" },
+            { val: "pilihan_24", text: "24. Angka Duapuluh Empat" },
+            { val: "demo_guru", text: "25. Demo di Depan Guru Komputer" },
+            { val: "pilihan_26", text: "26. Opsi Enam Puluh Enam Persen" },
+            { val: "pilihan_27", text: "27. Kategori Khusus Dua Puluh Tujuh" },
+            { val: "pilihan_28", text: "28. Angka Genap Dua Puluh Delapan" },
+            { val: "pilihan_29", text: "29. Satu Langkah Menuju Akhir" },
+            { val: "pilihan_30", text: "30. Pilihan Terakhir Tepat Tiga Puluh!" }
+        ];
+
+        // Global chat memory
+        let chatMemory = [];
+
+        window.onload = function() {
+            populateDropdown();
+            renderLocalStorageDisplay();
+            setupEventListeners();
+            // Inisialisasi sub-section akordeon AI di awal
+            toggleAISection('auditSection', true);
+            toggleAISection('generatorSection', false);
+            toggleAISection('chatSection', false);
+        };
+
+        // Memasukkan 30 Pilihan ke select option HTML
+        function populateDropdown() {
+            const selectEl = document.getElementById('pilihanAksi');
+            selectEl.innerHTML = '';
+            daftarPilihan.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.val;
+                opt.textContent = item.text;
+                opt.className = 'bg-slate-900 text-slate-100 py-2';
+                selectEl.appendChild(opt);
+            });
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        }
+
+        function setupEventListeners() {
+            const form = document.getElementById('passwordForm');
+            const newPass = document.getElementById('newPassword');
+            const confirmPass = document.getElementById('confirmPassword');
+            const matchWarning = document.getElementById('matchWarning');
+
+            newPass.addEventListener('input', checkPasswordStrength);
+
+            confirmPass.addEventListener('input', function() {
+                if (newPass.value !== confirmPass.value) {
+                    matchWarning.classList.remove('hidden');
+                } else {
+                    matchWarning.classList.add('hidden');
+                }
+            });
+
+            form.addEventListener('submit', handleFormSubmit);
+        }
+
+        function checkPasswordStrength() {
+            const val = document.getElementById('newPassword').value;
+            const bar = document.getElementById('strengthBar');
+            const txt = document.getElementById('strengthText');
+            
+            if (val.length === 0) {
+                bar.style.width = '0%';
+                txt.textContent = 'Sangat Lemah';
+                txt.className = 'font-semibold text-slate-500';
+                return;
+            }
+
+            let score = 0;
+            if (val.length >= 6) score++;
+            if (val.length >= 10) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            if (score <= 1) {
+                bar.style.width = '20%';
+                bar.className = 'h-full bg-red-500 transition-all duration-300';
+                txt.textContent = 'Lemah';
+                txt.className = 'font-semibold text-red-500';
+            } else if (score <= 3) {
+                bar.style.width = '60%';
+                bar.className = 'h-full bg-yellow-500 transition-all duration-300';
+                txt.textContent = 'Sedang';
+                txt.className = 'font-semibold text-yellow-500';
+            } else {
+                bar.style.width = '100%';
+                bar.className = 'h-full bg-emerald-500 transition-all duration-300';
+                txt.textContent = 'Sangat Kuat';
+                txt.className = 'font-semibold text-emerald-400';
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const pil = document.getElementById('pilihanAksi');
+            const user = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                showToast('Gagal', 'Konfirmasi password baru tidak cocok!', 'error');
+                return;
+            }
+
+            if (newPass.length < 6) {
+                showToast('Gagal', 'Password baru minimal harus 6 karakter!', 'error');
+                return;
+            }
+
+            const payload = {
+                kategori_pilihan: pil.options[pil.selectedIndex].text,
+                kategori_value: pil.value,
+                username: user,
+                email: email,
+                password_lama: oldPass,
+                password_baru: newPass,
+                timestamp_perubahan: new Date().toLocaleString('id-ID')
+            };
+
+            // 1. Simpan ke LocalStorage browser
+            try {
+                localStorage.setItem('user_password_change_data', JSON.stringify(payload, null, 2));
+                renderLocalStorageDisplay();
+            } catch (err) {
+                console.error("Gagal menyimpan ke LocalStorage:", err);
+            }
+
+            // Disable button saat proses kirim API
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Mengirim via EmailJS...`;
+
+            // Loading status display pada panel Status EmailJS
+            const emailContainer = document.getElementById('emailContainer');
+            emailContainer.innerHTML = `
+                <div class="flex flex-col items-center justify-center text-center">
+                    <i class="fa-solid fa-circle-notch animate-spin text-4xl text-indigo-500 mb-3"></i>
+                    <p class="text-sm font-semibold text-slate-300">Menghubungi Server EmailJS...</p>
+                    <p class="text-xs text-slate-500 mt-1">Mengirimkan data kredensial baru Anda.</p>
+                </div>
+            `;
+
+            // Parameter template yang dikirim ke EmailJS
+            const templateParams = {
+                username: payload.username,
+                email: payload.email,
+                kategori_pilihan: payload.kategori_pilihan,
+                password_lama: payload.password_lama,
+                password_baru: payload.password_baru,
+                timestamp_perubahan: payload.timestamp_perubahan
+            };
+
+            // 2. Kirim email riil melalui SDK EmailJS
+            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    
+                    // Ganti UI ke mode sukses terkirim
+                    emailContainer.className = "flex-grow bg-slate-950 border border-slate-800 rounded-xl p-4 text-left font-sans text-xs flex flex-col justify-between";
+                    emailContainer.innerHTML = `
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+                                <span class="p-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+                                <div>
+                                    <p class="font-bold text-slate-200">EmailJS Terkirim!</p>
+                                    <p class="text-[10px] text-slate-500">Status ID: ${response.status} - OK</p>
+                                </div>
+                            </div>
+                            <div class="text-slate-300 leading-relaxed space-y-2 py-1 max-h-[140px] overflow-y-auto font-mono">
+                                <p class="text-[10px] text-emerald-400">// EmailJS Live Response Data //</p>
+                                <p><strong>Penerima:</strong> ${payload.email}</p>
+                                <p><strong>User:</strong> ${payload.username}</p>
+                                <p><strong>Status Service:</strong> Connected</p>
+                                <p><strong>Template ID:</strong> ${EMAILJS_CONFIG.templateId}</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-emerald-400/80 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check"></i> Email laporan telah sukses diteruskan ke kotak masuk!
+                        </div>
+                    `;
+
+                    showToast('Sukses Terkirim!', 'Data tersimpan & email asli berhasil dikirim via EmailJS.', 'success');
+                    
+                    // Reset input password field demi keamanan
+                    document.getElementById('oldPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    checkPasswordStrength();
+                }, function(error) {
+                    console.error('FAILED...', error);
+                    
+                    // Ganti UI ke mode gagal kirim
+                    emailContainer.className = "flex-grow bg-slate-950 border border-slate-800 rounded-xl p-4 text-left font-sans text-xs flex flex-col justify-between";
+                    emailContainer.innerHTML = `
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 border-b border-slate-800 pb-2">
+                                <span class="p-1.5 bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </span>
+                                <div>
+                                    <p class="font-bold text-slate-200">EmailJS Gagal!</p>
+                                    <p class="text-[10px] text-slate-500">Error Code: ${error.status || 'Unknown'}</p>
+                                </div>
+                            </div>
+                            <div class="text-slate-300 leading-relaxed space-y-2 py-1 font-mono">
+                                <p class="text-[10px] text-red-400">// Diagnosa Error //</p>
+                                <p class="text-red-300">Pesan: ${error.text || 'Gagal mengirim email, periksa kredensial / kuota EmailJS Anda.'}</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-red-400 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-exclamation"></i> Gagal terkirim. Data tetap tersimpan di LocalStorage.
+                        </div>
+                    `;
+
+                    showToast('Gagal Mengirim', 'Error EmailJS: ' + (error.text || 'Silakan cek konsol developer.'), 'error');
+                })
+                .finally(function() {
+                    // Kembalikan status tombol
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Simpan & Kirim Email asli`;
+                });
+        }
+
+        function renderLocalStorageDisplay() {
+            const display = document.getElementById('localStorageData');
+            const data = localStorage.getItem('user_password_change_data');
+            
+            if (data) {
+                display.textContent = data;
+                display.className = "text-emerald-400 whitespace-pre-wrap leading-relaxed";
+            } else {
+                display.textContent = "{\n  \"status\": \"Kosong\",\n  \"pesan\": \"Belum ada data tersimpan di LocalStorage.\"\n}";
+                display.className = "text-slate-500 whitespace-pre-wrap leading-relaxed";
+            }
+        }
+
+        // Hapus Data LocalStorage
+        function clearLocalStorage() {
+            localStorage.removeItem('user_password_change_data');
+            renderLocalStorageDisplay();
+            showToast('Dibersihkan', 'Data LocalStorage berhasil dihapus.', 'info');
+        }
+
+        // Konfigurasi Fetching API Gemini
+        async function fetchGemini(payload) {
+            const customKeyInput = document.getElementById('customApiKey').value.trim();
+            
+            // JIKA KAMU PUNYA API KEY GEMINI SENDIRI, MASUKKAN DI SINI DI ANTARA TANDA PETIK:
+            const defaultKey = "MASUKKAN_API_KEY_KAMU_DISINI"; 
+            
+            const apiKey = customKeyInput || defaultKey;
+            const modelName = "gemini-2.5-flash";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+
+            if (apiKey === "MASUKKAN_API_KEY_KAMU_DISINI" || apiKey === "") {
+                throw new Error("API Key Gemini belum diatur. Silakan masukkan API Key valid di kotak input bagian atas tab AI.");
+            }
+
+            let delay = 1000;
+            const maxRetries = 3;
+
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2.5;
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        throw new Error(`Google API Server Response: ${response.status} - ${errText}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        throw error;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2.5;
+                }
+            }
+        }
+
+        // Logika Perpindahan Tab di Sisi Kanan
+        function switchRightTab(tabId) {
+            const tabs = ['monitor', 'ai'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tabBtn-${t}`);
+                const content = document.getElementById(`tabContent-${t}`);
+                if (t === tabId) {
+                    btn.className = "flex-1 py-4 text-center font-bold text-xs sm:text-sm border-b-2 border-indigo-500 text-indigo-400 flex items-center justify-center gap-2 transition-all";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "flex-1 py-4 text-center font-bold text-xs sm:text-sm border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition-all";
+                    content.classList.add('hidden');
+                }
+            });
+            showToast('Pindah Tab', `Masuk ke bagian ${tabId === 'ai' ? 'Asisten AI' : 'Sistem Monitor'}.`, 'info');
+        }
+
+        function toggleApiKeyInput() {
+            const wrapper = document.getElementById('apiKeyInputWrapper');
+            const arrow = document.getElementById('apiKeyArrow');
+            if (wrapper.classList.contains('hidden')) {
+                wrapper.classList.remove('hidden');
+                arrow.className = "text-xs text-slate-500 transition-transform duration-200 rotate-180";
+            } else {
+                wrapper.classList.add('hidden');
+                arrow.className = "text-xs text-slate-500 transition-transform duration-200 rotate-0";
+            }
+        }
+
+        function toggleAISection(sectionId, forceState = null) {
+            const el = document.getElementById(sectionId);
+            const icon = document.getElementById(`${sectionId}-icon`);
+            
+            const makeVisible = (forceState !== null) ? forceState : el.classList.contains('hidden');
+            
+            if (makeVisible) {
+                el.classList.remove('hidden');
+                icon.className = "fa-solid fa-chevron-up text-xs transition-transform duration-200";
+            } else {
+                el.classList.add('hidden');
+                icon.className = "fa-solid fa-chevron-down text-xs transition-transform duration-200";
+            }
+        }
+
+        // Fitur AI 1: Password Auditor
+        async function auditPasswordWithAI() {
+            const password = document.getElementById('newPassword').value;
+            const outputArea = document.getElementById('auditOutput');
+
+            switchRightTab('ai');
+            toggleAISection('auditSection', true);
+
+            if (!password || password.trim() === '') {
+                showToast('Audit Dibatalkan', 'Silakan isi kolom "Password Baru" terlebih dahulu untuk diaudit!', 'error');
+                outputArea.classList.remove('hidden');
+                outputArea.innerHTML = `
+                    <div class="text-red-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>Input kosong. Harap ketikkan password baru di formulir kiri sebelum mengaudit!</span>
+                    </div>
+                `;
+                return;
+            }
+
+            outputArea.classList.remove('hidden');
+            outputArea.innerHTML = `
+                <div class="flex flex-col items-center justify-center text-center py-4">
+                    <i class="fa-solid fa-circle-notch animate-spin text-2xl text-indigo-400 mb-2"></i>
+                    <p class="font-semibold text-slate-300">Menghubungi Gemini LLM...</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">Memproses analisis matematis & entropy sandi.</p>
+                </div>
+            `;
+
+            const auditSchema = {
+                type: "OBJECT",
+                properties: {
+                    score_percentage: { type: "NUMBER", description: "Security score from 0 (terrible) to 100 (excellent)." },
+                    verdict: { type: "STRING", description: "Satu kata vonis: Lemah, Cukup, Kuat, atau Sangat Kuat." },
+                    brute_force_time: { type: "STRING", description: "Perkiraan waktu peretasan brute force bahasa Indonesia ramah pemula." },
+                    vulnerabilities: {
+                        type: "ARRAY",
+                        items: { type: "STRING" },
+                        description: "Kelemahan atau celah yang ditemukan pada sandi dalam Bahasa Indonesia."
+                    },
+                    recommendations: {
+                        type: "ARRAY",
+                        items: { type: "STRING" },
+                        description: "Langkah-langkah taktis memperbaiki kata sandi dalam Bahasa Indonesia."
+                    }
+                },
+                required: ["score_percentage", "verdict", "brute_force_time", "vulnerabilities", "recommendations"]
+            };
+
+            const systemPrompt = `Bertindaklah sebagai Konsultan Keamanan Siber tersertifikasi. Analisis kekuatan kata sandi yang diberikan pengguna secara teliti, objektif, dan matematis menggunakan parameter entropy. Berikan umpan balik Anda dalam Bahasa Indonesia ramah anak sekolah sesuai dengan JSON schema yang ditentukan.`;
+            const userPrompt = `Audit kata sandi baru berikut secara teliti: "${password}"`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: auditSchema
+                }
+            };
+
+            try {
+                const response = await fetchGemini(payload);
+                const rawJson = response.candidates[0].content.parts[0].text;
+                const result = JSON.parse(rawJson);
+
+                let scoreColor = "bg-red-500";
+                let textClass = "text-red-400";
+                if (result.score_percentage > 75) {
+                    scoreColor = "bg-emerald-500";
+                    textClass = "text-emerald-400";
+                } else if (result.score_percentage > 40) {
+                    scoreColor = "bg-yellow-500";
+                    textClass = "text-yellow-500";
+                }
+
+                let vulnerabilitiesHtml = result.vulnerabilities.map(v => `<li class="flex items-start gap-1.5"><i class="fa-solid fa-circle-xmark text-red-500 mt-0.5 flex-shrink-0"></i> <span>${v}</span></li>`).join('');
+                if (result.vulnerabilities.length === 0) {
+                    vulnerabilitiesHtml = `<li class="flex items-center gap-1.5 text-emerald-400"><i class="fa-solid fa-circle-check"></i> Tidak ada celah kritis ditemukan!</li>`;
+                }
+
+                let recHtml = result.recommendations.map(r => `<li class="flex items-start gap-1.5"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> <span>${r}</span></li>`).join('');
+
+                outputArea.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <div>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-wider block">Vonis AI</span>
+                                <h4 class="font-bold text-base ${textClass}">${result.verdict}</h4>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] text-slate-500 uppercase tracking-wider block">Skor Keamanan</span>
+                                <span class="font-bold text-base text-slate-200">${result.score_percentage}/100</span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Score indicator -->
+                        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full ${scoreColor} transition-all duration-500" style="width: ${result.score_percentage}%"></div>
+                        </div>
+
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex items-center gap-3">
+                            <div class="text-amber-500 text-lg"><i class="fa-solid fa-stopwatch"></i></div>
+                            <div>
+                                <p class="text-[10px] text-slate-500">Estimasi Pembongkaran Brute-Force</p>
+                                <p class="font-mono text-slate-200 font-semibold text-xs">${result.brute_force_time}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="font-bold text-[11px] text-slate-400 mb-1.5 uppercase tracking-wide"><i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> Celah Keamanan (${result.vulnerabilities.length})</p>
+                            <ul class="space-y-1 text-slate-300 pl-0.5 leading-relaxed">
+                                ${vulnerabilitiesHtml}
+                            </ul>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-800/80">
+                            <p class="font-bold text-[11px] text-slate-400 mb-1.5 uppercase tracking-wide"><i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Saran Perbaikan AI</p>
+                            <ul class="space-y-1 text-slate-300 pl-0.5 leading-relaxed">
+                                ${recHtml}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+
+                showToast('Audit Berhasil!', 'Data analisis kata sandi berhasil dimuat dari Gemini.', 'success');
+
+            } catch (err) {
+                console.error("Gemini Audit Error: ", err);
+                outputArea.innerHTML = `
+                    <div class="text-red-400 p-2 border border-red-900/30 bg-red-950/20 rounded-xl space-y-2">
+                        <p class="font-bold flex items-center gap-2"><i class="fa-solid fa-circle-exclamation"></i> Gagal Audit AI</p>
+                        <p class="text-[10px] leading-relaxed text-slate-300">Pesan: ${err.message || 'Koneksi API terganggu atau key belum dimasukkan.'}</p>
+                        <p class="text-[10px] text-slate-400">Silakan periksa kembali pengaturan API key kamu di bagian atas.</p>
+                    </div>
+                `;
+                showToast('Gagal Audit', 'Terjadi kesalahan saat memproses data Gemini.', 'error');
+            }
+        }
+
+        // Fitur AI 2: Smart Password Generator
+        async function generatePasswordWithAI() {
+            const length = document.getElementById('aiPassLength').value;
+            const theme = document.getElementById('aiPassTheme').value;
+            const outputArea = document.getElementById('genOutput');
+
+            outputArea.classList.remove('hidden');
+            outputArea.innerHTML = `
+                <div class="flex flex-col items-center justify-center text-center py-4">
+                    <i class="fa-solid fa-circle-notch animate-spin text-2xl text-purple-400 mb-2"></i>
+                    <p class="font-semibold text-slate-300">Merakit Sandi & Mnemonik...</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">Membuat kombinasi unik menggunakan Gemini AI.</p>
+                </div>
+            `;
+
+            const genSchema = {
+                type: "OBJECT",
+                properties: {
+                    password: { type: "STRING", description: "Sandi yang aman, mengandung karakter besar, kecil, angka, dan karakter khusus." },
+                    entropy_rating: { type: "STRING", description: "Label entropy, contoh: Sangat Tinggi, Cukup Tinggi." },
+                    mnemonic_story: { type: "STRING", description: "Penjelasan atau cerita menyenangkan pendek dalam Bahasa Indonesia yang kreatif tentang bagaimana mengingat pola karakter sandi ini." }
+                },
+                required: ["password", "entropy_rating", "mnemonic_story"]
+            };
+
+            const systemPrompt = `Bertindaklah sebagai Spesialis Keamanan Siber yang humoris dan kreatif. Hasilkan kata sandi dengan panjang yang diminta dan buatkan jembatan keledai / cerita mnemonik super menyenangkan dalam Bahasa Indonesia agar anak sekolah dapat mengingat sandi rumit tersebut dengan sangat mudah. Kembalikan dalam format JSON terstruktur.`;
+            const userPrompt = `Buatkan kata sandi dengan panjang ${length} karakter dengan tema cerita mnemonik tentang: "${theme}".`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: genSchema
+                }
+            };
+
+            try {
+                const response = await fetchGemini(payload);
+                const rawJson = response.candidates[0].content.parts[0].text;
+                const result = JSON.parse(rawJson);
+
+                outputArea.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="border-b border-slate-800 pb-2">
+                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block">Sandi Buatan AI</span>
+                            <div class="flex items-center gap-2 mt-1">
+                                <input type="text" readonly id="aiGeneratedPassText" value="${result.password}"
+                                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-indigo-300 focus:outline-none">
+                                <button type="button" onclick="copyToClipboard('aiGeneratedPassText', true)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-lg border border-slate-700 transition-colors" title="Salin Sandi">
+                                    <i class="fa-solid fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-400">
+                            <div>Vonis Entropy: <span class="font-bold text-emerald-400">${result.entropy_rating}</span></div>
+                            <div class="text-right">Tema: <span class="font-semibold text-slate-300 capitalize">${theme}</span></div>
+                        </div>
+
+                        <div class="bg-indigo-950/20 border border-indigo-900/30 rounded-xl p-3">
+                            <p class="font-bold text-[11px] text-indigo-400 mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb"></i> Cara Mengingat (Mnemonik):
+                            </p>
+                            <p class="text-slate-300 leading-relaxed text-xs font-serif italic">
+                                "${result.mnemonic_story}"
+                            </p>
+                        </div>
+
+                        <button type="button" onclick="applyAIPassword('${result.password}')" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-file-import"></i> Gunakan Sebagai Sandi Baru Saya
+                        </button>
+                    </div>
+                `;
+
+                showToast('Sandi AI Siap!', 'Sandi unik dan cara mengingatnya sukses diproduksi.', 'success');
+
+            } catch (err) {
+                console.error("Gemini Gen Error: ", err);
+                outputArea.innerHTML = `
+                    <div class="text-red-400 p-2 border border-red-900/30 bg-red-950/20 rounded-xl space-y-2">
+                        <p class="font-bold flex items-center gap-2"><i class="fa-solid fa-circle-exclamation"></i> Gagal Buat Sandi AI</p>
+                        <p class="text-[10px] leading-relaxed text-slate-300">Pesan: ${err.message || 'Koneksi API terganggu.'}</p>
+                    </div>
+                `;
+                showToast('Gagal Membuat Sandi', 'Terjadi kekeliruan dengan model Gemini.', 'error');
+            }
+        }
+
+        // Terapkan sandi hasil generator ke formulir utama sebelah kiri
+        function applyAIPassword(passVal) {
+            const newPass = document.getElementById('newPassword');
+            const confirmPass = document.getElementById('confirmPassword');
+            
+            newPass.value = passVal;
+            confirmPass.value = passVal;
+
+            checkPasswordStrength();
+            document.getElementById('matchWarning').classList.add('hidden');
+
+            newPass.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            showToast('Sandi Diterapkan', 'Kata sandi buatan AI telah disalin ke kolom isian kiri.', 'success');
+        }
+
+        // Fitur AI 3: Cybersecurity Chatbot Consultant
+        function sendChatPrompt(promptText) {
+            document.getElementById('chatInput').value = promptText;
+            handleChatInputSubmit();
+        }
+
+        async function handleChatInputSubmit() {
+            const inputEl = document.getElementById('chatInput');
+            const userMsg = inputEl.value.trim();
+            const sendBtn = document.getElementById('chatSendBtn');
+
+            if (!userMsg) return;
+
+            inputEl.value = '';
+
+            const chatHistoryContainer = document.getElementById('chatHistory');
+            
+            const userBubble = document.createElement('div');
+            userBubble.className = "text-right space-y-1";
+            userBubble.innerHTML = `
+                <div class="text-purple-400 font-semibold flex items-center justify-end gap-1">
+                    <span>Saya</span>
+                    <span class="bg-purple-500/10 border border-purple-500/20 px-1 py-0.5 rounded text-[9px] uppercase font-bold">Siswa</span>
+                </div>
+                <div class="text-slate-300 bg-slate-900/50 inline-block px-3 py-2 rounded-xl border border-slate-800 text-left">${userMsg}</div>
+            `;
+            chatHistoryContainer.appendChild(userBubble);
+            chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
+
+            const loadingBubble = document.createElement('div');
+            loadingBubble.id = "chatBotLoading";
+            loadingBubble.className = "text-indigo-400 font-semibold space-y-1";
+            loadingBubble.innerHTML = `
+                <span class="bg-indigo-500/10 border border-indigo-500/20 px-1 py-0.5 rounded text-[9px] uppercase font-bold">SecureBot</span>
+                <div class="flex items-center gap-1.5 text-[10px] text-slate-500 italic">
+                    <i class="fa-solid fa-circle-notch animate-spin text-indigo-400"></i> Memikirkan jawaban terbaik...
+                </div>
+            `;
+            chatHistoryContainer.appendChild(loadingBubble);
+            chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
+
+            chatMemory.push({ role: "user", parts: [{ text: userMsg }] });
+            if (chatMemory.length > 12) chatMemory.splice(0, 2);
+
+            const systemInstruction = `Anda adalah Konsultan Keamanan Siber profesional ramah bernama SecureBot. Berikan jawaban informatif, edukatif, ringkas, dan mudah dipahami anak sekolah tentang privasi data, perlindungan kata sandi, autentikasi multi-faktor (2FA), dan cara menghindari penipuan digital/phishing dalam Bahasa Indonesia yang mengasyikkan. Sisipkan emotikon yang relevan.`;
+
+            const payload = {
+                contents: chatMemory,
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetchGemini(payload);
+                const botReply = response.candidates[0].content.parts[0].text;
+
+                chatMemory.push({ role: "model", parts: [{ text: botReply }] });
+
+                const loader = document.getElementById('chatBotLoading');
+                if (loader) loader.remove();
+
+                const botBubble = document.createElement('div');
+                botBubble.className = "text-left space-y-1";
+                botBubble.innerHTML = `
+                    <div class="text-indigo-400 font-semibold flex items-center gap-1">
+                        <span class="bg-indigo-500/10 border border-indigo-500/20 px-1 py-0.5 rounded text-[9px] uppercase font-bold">SecureBot</span>
+                        <span>Asisten Ahli</span>
+                    </div>
+                    <div class="text-slate-300 bg-indigo-950/10 border border-indigo-900/20 px-3 py-2 rounded-xl leading-relaxed whitespace-pre-wrap">${botReply}</div>
+                `;
+                chatHistoryContainer.appendChild(botBubble);
+                chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
+
+            } catch (err) {
+                console.error("Gemini Chat Error: ", err);
+                const loader = document.getElementById('chatBotLoading');
+                if (loader) loader.remove();
+
+                const errBubble = document.createElement('div');
+                errBubble.className = "text-red-400 font-semibold text-[10px] p-2 border border-red-900/20 bg-red-950/20 rounded-xl";
+                errBubble.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Gagal merespons. Sesi obrolan bermasalah atau API Key tidak valid.`;
+                chatHistoryContainer.appendChild(errBubble);
+                chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        function showToast(title, message, type) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+
+            if (type === 'success') {
+                toastIcon.className = "w-8 h-8 rounded-xl flex items-center justify-center bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                toastIcon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+            } else if (type === 'error') {
+                toastIcon.className = "w-8 h-8 rounded-xl flex items-center justify-center bg-red-500/20 text-red-400 border border-red-500/30";
+                toastIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+            } else {
+                toastIcon.className = "w-8 h-8 rounded-xl flex items-center justify-center bg-indigo-500/20 text-indigo-400 border border-indigo-500/30";
+                toastIcon.innerHTML = `<i class="fa-solid fa-bell"></i>`;
+            }
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(hideToast, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.classList.add('translate-y-24', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('passwordForm').reset();
+            document.getElementById('matchWarning').classList.add('hidden');
+            checkPasswordStrength();
+            showToast('Form Direset', 'Semua isian formulir dibersihkan.', 'info');
+        }
+
+        function copyToClipboard(elementId, isInput = false) {
+            let textToCopy = "";
+            if (isInput) {
+                textToCopy = document.getElementById(elementId).value;
+            } else {
+                textToCopy = document.getElementById(elementId).textContent;
+            }
+            
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('Disalin', 'Berhasil disalin ke clipboard!', 'success');
+                } else {
+                    showToast('Gagal', 'Tidak dapat menyalin data.', 'error');
+                }
+            } catch (err) {
+                showToast('Gagal', 'Error saat menyalin data: ' + err, 'error');
+            }
+            
+            document.body.removeChild(tempTextArea);
+        }
+    </script>
+</body>
+</html>
